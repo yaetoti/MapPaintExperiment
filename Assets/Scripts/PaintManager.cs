@@ -13,9 +13,15 @@ public class PaintManager : MonoBehaviour {
   
   public static PaintManager Instance { get; private set; } = null;
 
+  // Inspector
+  public Transform player;
+  public GameObject projectilePrefab;
+  public float projectileRadius = 0.1f;
+  public float projectileVelocity = 10f;
+  
+  // Data
   private readonly HitData[] m_hits = new HitData[MAX_HITS];
   private int m_hitsCount = 0;
-
   private GraphicsBuffer m_hitsBuffer;
   
   [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -52,9 +58,20 @@ public class PaintManager : MonoBehaviour {
   }
 
   private void Update() {
+    // Upload buffer data
     if (m_hitsCount != 0) {
       // Upload data
       m_hitsBuffer.SetData(m_hits, 0, 0, m_hitsCount);
+    }
+    
+    // Update paint gun
+    if (Input.GetMouseButtonDown(0)) {
+      GameObject projectile = Instantiate(projectilePrefab, player.position, Quaternion.identity);
+      projectile.transform.localScale = projectileRadius * 2f * Vector3.one;
+      Rigidbody rb = projectile.GetComponent<Rigidbody>();
+      if (rb != null) {
+        rb.linearVelocity = player.forward * projectileVelocity;
+      }
     }
   }
 
