@@ -14,7 +14,7 @@ Shader "Custom/Paint" {
       #pragma fragment frag
 
       #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
-
+      
       struct VertexIn {
         float4 positionOS : POSITION;
         float2 uv : TEXCOORD0;
@@ -25,6 +25,14 @@ Shader "Custom/Paint" {
         float3 positionWS : WS_POSITION;
         float2 uv : TEXCOORD0;
       };
+      
+      struct HitData {
+        float3 position;
+        float size;
+      };
+      
+      StructuredBuffer<HitData> hits;
+      int hitsCount;
 
       VertexOut vert(VertexIn IN) {
         VertexOut OUT;
@@ -37,14 +45,15 @@ Shader "Custom/Paint" {
       }
 
       half4 frag(VertexOut IN) : SV_Target {
-        float3 worldCoord = float3(0, 0, 0);
-        float radius = 1.0;
         
-        if (length(IN.positionWS - worldCoord) < radius) {
-          return half4(1, 0, 0, 1);
+        for (int i = 0; i < hitsCount; ++i) {
+          HitData data = hits[i];
+          if (length(IN.positionWS - data.position) < data.size) {
+            return half4(1, 0, 0, 1);
+          }
         }
         
-        return half4(1, 1, 1, 1);
+        return half4(0, 0, 0, 0);
       }
       ENDHLSL
     }
