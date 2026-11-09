@@ -28,10 +28,7 @@ public class Paintable : MonoBehaviour {
     
     // Setup
     m_cmd = new();
-    
-    var paintShader = Shader.Find("Custom/Paint");
-    m_paintMaterial = new(paintShader);
-    
+    m_paintMaterial = new(PaintManager.Instance.paintShader);
     m_texture = new RenderTexture(textureSize, textureSize, GraphicsFormat.R8G8B8A8_UNorm, GraphicsFormat.None);
     
     // Clear target
@@ -49,11 +46,11 @@ public class Paintable : MonoBehaviour {
   private void Update() {
     var hitsCount = PaintManager.Instance.GetHitsCount();
     if (hitsCount != 0) {
-      m_cmd.SetRenderTarget(m_texture);
+      m_cmd.SetRenderTarget(m_texture, RenderBufferLoadAction.Load, RenderBufferStoreAction.Store);
       m_cmd.SetGlobalBuffer(Hits, PaintManager.Instance.GetHitsBuffer());
       m_cmd.SetGlobalInt(HitsCount, hitsCount);
       
-      m_cmd.DrawMesh(m_meshFilter.mesh, Matrix4x4.identity, m_paintMaterial);
+      m_cmd.DrawMesh(m_meshFilter.mesh, transform.localToWorldMatrix, m_paintMaterial);
       
       Graphics.ExecuteCommandBuffer(m_cmd);
       m_cmd.Clear();

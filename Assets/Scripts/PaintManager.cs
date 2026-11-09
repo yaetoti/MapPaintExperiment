@@ -14,6 +14,7 @@ public class PaintManager : MonoBehaviour {
   public static PaintManager Instance { get; private set; } = null;
 
   // Inspector
+  public Shader paintShader;
   public Transform player;
   public GameObject projectilePrefab;
   public float projectileRadius = 0.1f;
@@ -72,6 +73,10 @@ public class PaintManager : MonoBehaviour {
       if (rb != null) {
         rb.linearVelocity = player.forward * projectileVelocity;
       }
+    }
+
+    if (Input.GetKeyDown("escape")) {
+      Application.Quit();
     }
   }
 

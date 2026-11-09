@@ -45,14 +45,14 @@ Shader "Custom/Paint" {
       }
 
       half4 frag(VertexOut IN) : SV_Target {
-        
         for (int i = 0; i < hitsCount; ++i) {
           HitData data = hits[i];
           if (length(IN.positionWS - data.position) < data.size) {
             return half4(1, 0, 0, 1);
           }
         }
-        
+
+        discard;
         return half4(0, 0, 0, 0);
       }
       ENDHLSL
