@@ -30,6 +30,7 @@ public class Paintable : MonoBehaviour {
     m_cmd = new();
     m_paintMaterial = new(PaintManager.Instance.paintShader);
     m_texture = new RenderTexture(textureSize, textureSize, GraphicsFormat.R8G8B8A8_UNorm, GraphicsFormat.None);
+    m_texture.Create();
     
     // Clear target
     m_cmd.SetRenderTarget(m_texture);
